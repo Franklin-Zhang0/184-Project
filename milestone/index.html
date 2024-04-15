@@ -62,19 +62,34 @@
 <body>
 
     <h1 align="middle">CS 184 Final Project</h1>
-    <h1 align="middle">Fluid SuperResolution</h1>
+    <h1 align="middle">Fluid Super Resolution</h1>
     <h3 align="middle">Charles Cai, Congrong Xu, Franklin Zhang, Yunqi Li</h3>
 
-  
-
-    <br><br>
+    <h2 align="middle">Milestone Overview</h2>
+    <p align="left">In this project, we aimed at building a prediction model for fluid simulation. 
+        However, after some test & trials, we found that directly predicting the next frame of the fluid simulation would results in high prediction error and low visual quality as the time step increases.
+        Therefore, we decided to modify our project to focus on speeding up the fluid simulation process by super-resolving the low-resolution fluid simulation data.
+    </p>
 
     <div>
         <h2 align="middle">Progress</h2>
         <h3 align="left">Fluid Simulations Dataset</h3>
         <p align="left"> TODO </p>
-        <h3 align="left">VAE Model For Super Resolution</h3>
+        <p align="left"> Size? What kind of state? Simulation method? Length? Number of samples, etc.. </p>
+        <h3 align="left">VAE Pipeline For Super Resolution</h3>
+        <p align="left"> We build up a VQ-VAE-2 training pipeline for the super resolution of fluid simulation data. </p>
+        <!-- number list -->
+        <ol>
+            <li> Downsample the fluid simulation data by a factor of 8 on each axis to generate the low-resolution data. </li>
+            <li> Upsample by a factor of 8 using bilinear interpolation. </li>
+            <li> Concatenate 3 frames of the upsampled data to form the input to the VQ-VAE-2 model(Each frame differs by 0.5s). </li>
+            <li> Feed the input date into the VQ-VAE-2 model to reconstruct the 3 frames of high-resolution data. </li>
+            <li> Only pick the middle frame of the reconstructed data as the output and compute the reconstruction loss. </li>
+        </ol>        
+        <h3 align="left">Result Demonstration</h3>
         <p align="left"> TODO </p>
+        
+
 
     </div>
 
