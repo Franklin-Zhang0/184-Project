@@ -121,8 +121,41 @@
             </li>
         </ol>
         <h3 align="left">Result Demonstration</h3>
-        <p align="left"> TODO </p>
-
+        <p align="left"> We have trained the VQ-VAE-2 model on the fluid simulation dataset and generated some
+            super-resolved fluid simulation data. The following images show the comparison among the ground truth
+            high-resolution data, downsampled low-resolution data, bilinear upsampled data, and the VQ-VAE-2 upsampled data.
+        </p>
+        <table align = "center">
+            <tr>
+                <td>
+                    <figure>
+                        <img src="images/origin.gif" alt="ground_truth" width="200" height="200">
+                        <figcaption>Ground Truth (64*64)</figcaption>
+                    </figure>
+                </td>
+                <td>
+                    <figure>
+                        <img src="images/nearest.gif" alt="low_resolution" width="200" height="200">
+                        <figcaption>Low Resolution (16*16)</figcaption>
+                    </figure>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <figure>
+                        <img src="images/bilinear.gif" alt="bilinear_upsampled" width="200" height="200">
+                        <figcaption>Bilinear Upsampled (64*64)</figcaption>
+                    </figure>
+                </td>
+                <td>
+                    <figure>
+                        <img src="images/super_resolution.gif" alt="vq_vae_upsampled" width="200" height="200">
+                        <figcaption>VQ-VAE 2 Upsampled (64*64)</figcaption>
+                    </figure>
+                </td>
+            </tr>
+        </table>
+    </div>
 
 
     </div>
