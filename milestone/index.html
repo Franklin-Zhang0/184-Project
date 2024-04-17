@@ -84,18 +84,26 @@
     <div>
         <h2 align="middle">Progress</h2>
         <h3 align="left">Physical Method</h3>
-        <p align="left"> In this project, we apply the spectral method, which is often employed in computational fluid dynamics (CFD).
-            The spectral method is a numerical technique used to approximate solutions to differential equations 
-            by representing the solution as a sum of basis functions in the spectral domain after applying Fourier Transform. 
-            The spectral method is particularly useful for solving partial differential equations in multiple dimensions.
-            In the context of fluid dynamics, spectral methods are often employed for solving the Navier-Stokes equations, 
+        <p align="left"> In this project, we apply the spectral method, which is often employed in computational fluid
+            dynamics (CFD).
+            The spectral method is a numerical technique used to approximate solutions to differential equations
+            by representing the solution as a sum of basis functions in the spectral domain after applying Fourier
+            Transform.
+            The spectral method is particularly useful for solving partial differential equations in multiple
+            dimensions.
+            In the context of fluid dynamics, spectral methods are often employed for solving the Navier-Stokes
+            equations,
             which indicate the pattern of fluid flow.
         </p>
 
-        <p align="left"> When it comes to fluid simulation using spectral methods, the Poisson equation and the Crank-Nicolson update
-             are key components used in conjunction with the Navier-Stokes equations. In this case, we solved the Poisson equation in Fourier space
-             to calculate the vorticity field from the velocity field. And use the Crank-Nicolson method to update the vorticity field,
-             incorporating nonlinear advection, diffusion, and forcing effects, thus advancing the fluid simulation over successive time steps.
+        <p align="left"> When it comes to fluid simulation using spectral methods, the Poisson equation and the
+            Crank-Nicolson update
+            are key components used in conjunction with the Navier-Stokes equations. In this case, we solved the Poisson
+            equation in Fourier space
+            to calculate the vorticity field from the velocity field. And use the Crank-Nicolson method to update the
+            vorticity field,
+            incorporating nonlinear advection, diffusion, and forcing effects, thus advancing the fluid simulation over
+            successive time steps.
         </p>
 
         <h3 align="left">Fluid Simulations Dataset</h3>
@@ -114,10 +122,12 @@
             Crank-Nicolson time-stepping scheme, incorporating a forcing term defined as 0.1*(sin(2pi(x+y)) +
             cos(2pi(x+y))).</p>
 
-        <p align="left">For each simulation, we recorded 200 snapshots(1 snapshots per 0.1s) of the vorticity field at equally spaced
+        <p align="left">For each simulation, we recorded 200 snapshots(1 snapshots per 0.1s) of the vorticity field at
+            equally spaced
             intervals, along with
             the
-            vorticity fields at the previous and next time steps. The dataset was generated in batches of 40 simulations to manage computational resources
+            vorticity fields at the previous and next time steps. The dataset was generated in batches of 40 simulations
+            to manage computational resources
             efficiently.</p>
         <h3 align="left">VAE Pipeline For Super Resolution</h3>
         <p align="left"> We build up a VQ-VAE-2 training pipeline for the super resolution of fluid simulation data.
@@ -136,9 +146,10 @@
         <h3 align="left">Result Demonstration</h3>
         <p align="left"> We have trained the VQ-VAE-2 model on the fluid simulation dataset and generated some
             super-resolved fluid simulation data. The following images show the comparison among the ground truth
-            high-resolution data, downsampled low-resolution data, bilinear upsampled data, and the VQ-VAE-2 upsampled data.
+            high-resolution data, downsampled low-resolution data, bilinear upsampled data, and the VQ-VAE-2 upsampled
+            data.
         </p>
-        <table align = "center">
+        <table align="center">
             <tr>
                 <td>
                     <figure>
@@ -169,11 +180,19 @@
             </tr>
         </table>
     </div>
+    <h3 align="left">Transformer For Fluid Prediction</h3>
+    <p align="left"> We have also trained a transformer model on the fluid simulation dataset to predict the next frame
+        of the fluid simulation. The transformer did not perform well on the fluid simulation dataset, as the prediction
+        error increased significantly with the time step. The following images show the comparison between the ground
+        truth and the transformer prediction.</p>
+
 
 
     </div>
     <h2 align="middle">Milestone Slides</h2>
-    <p align="middle">The Milestone slides can be found <a href="https://docs.google.com/presentation/d/1B8Ss29bp9p9EhxF-oR3fAqsA9vn401e2p3GE9o0NthE/" target="_blank">here</a>.</p>
+    <p align="middle">The Milestone slides can be found <a
+            href="https://docs.google.com/presentation/d/1B8Ss29bp9p9EhxF-oR3fAqsA9vn401e2p3GE9o0NthE/"
+            target="_blank">here</a>.</p>
 
     <h2 align="middle">Updated Work Plan</h2>
 
