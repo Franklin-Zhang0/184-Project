@@ -154,13 +154,13 @@
                 <td>
                     <figure>
                         <img src="images/origin.gif" alt="ground_truth" width="200" height="200">
-                        <figcaption>Ground Truth (64*64)</figcaption>
+                        <figcaption align="center">Ground Truth (64*64)</figcaption>
                     </figure>
                 </td>
                 <td>
                     <figure>
                         <img src="images/nearest.gif" alt="low_resolution" width="200" height="200">
-                        <figcaption>Low Resolution (8*8)</figcaption>
+                        <figcaption align="center">Low Resolution (8*8)</figcaption>
                     </figure>
                 </td>
             </tr>
@@ -168,33 +168,47 @@
                 <td>
                     <figure>
                         <img src="images/bilinear.gif" alt="bilinear_upsampled" width="200" height="200">
-                        <figcaption>Bilinear Upsampled (64*64)</figcaption>
+                        <figcaption align="center">Bilinear Upsampled (64*64)</figcaption>
                     </figure>
                 </td>
                 <td>
                     <figure>
                         <img src="images/super_resolution.gif" alt="vq_vae_upsampled" width="200" height="200">
-                        <figcaption>VQ-VAE 2 Upsampled (64*64)</figcaption>
+                        <figcaption align="center">VQ-VAE 2 Upsampled (64*64)</figcaption>
                     </figure>
                 </td>
             </tr>
         </table>
     </div>
+
+    <div>
     <h3 align="left">Transformer For Fluid Prediction</h3>
     <p align="left"> We have also trained a transformer model on the fluid simulation dataset to predict the next frame
         of the fluid simulation. The transformer did not perform well on the fluid simulation dataset, as the prediction
         error increased significantly with the time step. The following images show the comparison between the ground
-        truth and the transformer prediction.</p>
+        truth and the transformer prediction.</p>   
+        <table align="center">
+            <tr>
+                <td>
+                    <figure>
+                        <img src="images/trans_origin.gif" alt="ground_truth" width="200" height="200">
+                        <figcaption align="center">Ground Truth (64*64)</figcaption>
+                    </figure>
+                </td>
+                <td>
+                    <figure>
+                        <img src="images/trans_pred.gif" alt="transformer_prediction" width="200" height="200">
+                        <figcaption align="center">Transformer Prediction (64*64)</figcaption>
+                    </figure>
+                </td>
+            </tr>
+        </table>
 
-
-
-    </div>
     <h2 align="middle">Milestone Slides and Video</h2>
     <p align="middle">The Milestone slides can be found <a href="https://docs.google.com/presentation/d/1U1CHY0-fs_mRGrWPOZpeogGM2bH88i2tAF3Dig0kPLI" target="_blank">here</a>.</p>
     <p align="middle">The Milestone video can be found <a href="./video/184-milestone.mp4">here</a>
-    <h2 align="middle">Updated Work Plan</h2>
-
-
+    
+        <h2 align="middle">Updated Work Plan</h2>
     <table class="custom-tbl">
         <tr>
             <th>Week&emsp;</th>
