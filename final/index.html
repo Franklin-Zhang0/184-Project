@@ -143,6 +143,28 @@
             <li> Only pick the middle frame of the reconstructed data as the output and compute the reconstruction loss.
             </li>
         </ol>
+        <h3 align="left">Performance Evaluation</h3>
+        <p align="left"> We use three loss to evaluate the performance of the VQ-VAE-2 model: </p>
+        <ol>
+            <li> MAE: Mean absolute Error to calculate the absolute distance between the ground truth and our result.</li>
+            <figure align="left">
+                <img src="images/MAE.png" >
+                <figcaption align="center">Mean Absolute Error</figcaption>
+            </figure>
+            <li> RMSE: Root Mean Square Error to calculate the square root of the average of the squared differences
+                between the ground truth and our result.</li>
+            <figure align="left">
+                <img src="images/RMSE.png" >
+                <figcaption align="center">Root Mean Square Error</figcaption>
+            </figure>
+            <li> Physics Loss: Use Navier-Stokes equations to compute the force field from vorticity field.
+                Then calculate L2 Loss between the ground truth force field and the computed force field.
+                </li>
+            <figure align="left">
+                <img src="images/physics_loss.png" >
+                <figcaption align="center">Physics Loss</figcaption>
+            </figure>    
+        </ol>
         <h3 align="left">Result Demonstration</h3>
         <p align="left"> We have trained the VQ-VAE-2 model on the fluid simulation dataset and generated some
             super-resolved fluid simulation data. The following images show the comparison among the ground truth
