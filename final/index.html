@@ -1,0 +1,233 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+
+<head>
+    <style>
+        body {
+            background-color: #404040;
+            background-color: white;
+            padding: 100px;
+            width: 800px;
+            margin: auto;
+            text-align: left;
+            font-weight: 300;
+            font-family: 'Open Sans', sans-serif;
+            color: #121212;
+            line-height: 1.6;
+        }
+
+        h1,
+        h2,
+        h3,
+        h4 {
+            font-family: 'Source Sans Pro', sans-serif;
+        }
+
+        kbd {
+            color: #121212;
+        }
+
+        blockquote {
+            color: #888;
+            border: 2px solid #333;
+            padding: 10px;
+            background-color: #ccc;
+        }
+
+        table.custom-tbl {
+            border: 1px solid;
+        }
+
+        table.custom-tbl th {
+            border: 1px solid;
+            background-color: rgb(99, 209, 209);
+        }
+
+        table.custom-tbl td {
+            border: 1px solid;
+            background-color: #f1e686a8;
+        }
+    </style>
+
+    <!-- <title>CS 184 Mesh Editor</title> -->
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <!-- Not using below due to lacking bold fontfaces -->
+    <!-- <link href="https://fonts.googleapis.com/css?family=Open+Sans|Source+Sans+Pro|Source+Sans+Pro:400,700" rel="stylesheet"> -->
+    <link href="https://fonts.googleapis.com/css?family=Roboto+Mono|Roboto+Slab|Roboto:300,400,500,700"
+        rel="stylesheet" />
+
+    <script>
+        MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']]
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js">
+    </script>
+</head>
+
+<body>
+
+    <h1 align="middle">CS 184 Final Project</h1>
+    <h1 align="middle">Fluid Super Resolution</h1>
+    <h3 align="middle">Charles Cai, Congrong Xu, Franklin Zhang, Yunqi Li</h3>
+
+    <h2 align="middle">Milestone Overview</h2>
+    <p align="left">In this project, we aimed at building a prediction model for fluid simulation.
+        However, after some test & trials, we found that directly predicting the next frame of the fluid simulation
+        would results in high prediction error and low visual quality as the time step increases.
+        Therefore, we decided to modify our project to focus on speeding up the fluid simulation process by
+        super-resolving the low-resolution fluid simulation data.
+    </p>
+
+    <div>
+        <h2 align="middle">Progress</h2>
+        <h3 align="left">Physical Method</h3>
+        <p align="left"> In this project, we apply the spectral method, which is often employed in computational fluid
+            dynamics (CFD).
+            The spectral method is a numerical technique used to approximate solutions to differential equations
+            by representing the solution as a sum of basis functions in the spectral domain after applying Fourier
+            Transform.
+            The spectral method is particularly useful for solving partial differential equations in multiple
+            dimensions.
+            In the context of fluid dynamics, spectral methods are often employed for solving the Navier-Stokes
+            equations,
+            which indicate the pattern of fluid flow.
+        </p>
+
+        <p align="left"> When it comes to fluid simulation using spectral methods, the Poisson equation and the
+            Crank-Nicolson update
+            are key components used in conjunction with the Navier-Stokes equations. In this case, we solved the Poisson
+            equation in Fourier space
+            to calculate the vorticity field from the velocity field. And use the Crank-Nicolson method to update the
+            vorticity field,
+            incorporating nonlinear advection, diffusion, and forcing effects, thus advancing the fluid simulation over
+            successive time steps.
+        </p>
+
+        <h3 align="left">Fluid Simulations Dataset</h3>
+        <p align="left"> We have generated a comprehensive dataset of 1,800 fluid simulations using the 2D
+            Navier-Stokes equations, which simulates 2D incompressible viscous fluid. The
+            simulations were performed on a 256x256 grid, subsampled to 64x64 for efficient storage. Each simulation
+            captures the
+            evolution of the vorticity field over a total time of 20.0 units, with a time step of 1e-4 and a viscosity
+            of 1e-3.</p>
+
+        <p align="left"> To create diverse initial conditions, we sampled the initial vorticity fields from a 2D
+            Gaussian Random
+            Field with
+            covariance parameters alpha=2.5 and tau=7. The simulations were solved using a spectral method in Fourier
+            space with a
+            Crank-Nicolson time-stepping scheme, incorporating a forcing term defined as 0.1*(sin(2pi(x+y)) +
+            cos(2pi(x+y))).</p>
+
+        <p align="left">For each simulation, we recorded 200 snapshots(1 snapshots per 0.1s) of the vorticity field at
+            equally spaced
+            intervals, along with
+            the
+            vorticity fields at the previous and next time steps. The dataset was generated in batches of 40 simulations
+            to manage computational resources
+            efficiently.</p>
+        <h3 align="left">VAE Pipeline For Super Resolution</h3>
+        <p align="left"> We build up a VQ-VAE-2 training pipeline for the super resolution of fluid simulation data.
+        </p>
+        <!-- number list -->
+        <ol>
+            <li> Downsample the fluid simulation data by a factor of 8 on each axis to generate the low-resolution data.
+            </li>
+            <li> Upsample by a factor of 8 using bilinear interpolation. </li>
+            <li> Concatenate 3 frames of the upsampled data to form the input to the VQ-VAE-2 model(Each frame differs
+                by 0.5s). </li>
+            <li> Feed the input date into the VQ-VAE-2 model to reconstruct the 3 frames of high-resolution data. </li>
+            <li> Only pick the middle frame of the reconstructed data as the output and compute the reconstruction loss.
+            </li>
+        </ol>
+        <h3 align="left">Result Demonstration</h3>
+        <p align="left"> We have trained the VQ-VAE-2 model on the fluid simulation dataset and generated some
+            super-resolved fluid simulation data. The following images show the comparison among the ground truth
+            high-resolution data, downsampled low-resolution data, bilinear upsampled data, and the VQ-VAE-2 upsampled
+            data.
+        </p>
+        <table align="center">
+            <tr>
+                <td>
+                    <figure>
+                        <img src="images/origin.gif" alt="ground_truth" width="200" height="200">
+                        <figcaption align="center">Ground Truth (64*64)</figcaption>
+                    </figure>
+                </td>
+                <td>
+                    <figure>
+                        <img src="images/nearest.gif" alt="low_resolution" width="200" height="200">
+                        <figcaption align="center">Low Resolution (8*8)</figcaption>
+                    </figure>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <figure>
+                        <img src="images/bilinear.gif" alt="bilinear_upsampled" width="200" height="200">
+                        <figcaption align="center">Bilinear Upsampled (64*64)</figcaption>
+                    </figure>
+                </td>
+                <td>
+                    <figure>
+                        <img src="images/super_resolution.gif" alt="vq_vae_upsampled" width="200" height="200">
+                        <figcaption align="center">VQ-VAE 2 Upsampled (64*64) (Ours)</figcaption>
+                    </figure>
+                </td>
+            </tr>
+        </table>
+    </div>
+
+    <div>
+    <h3 align="left">Transformer For Fluid Prediction</h3>
+    <p align="left"> We have also trained a transformer model on the fluid simulation dataset to predict the next frame
+        of the fluid simulation. The transformer did not perform well on the fluid simulation dataset, as the prediction
+        error increased significantly with the time step. The following images show the comparison between the ground
+        truth and the transformer prediction.</p>   
+        <table align="center">
+            <tr>
+                <td>
+                    <figure>
+                        <img src="images/trans_origin.gif" alt="ground_truth" width="200" height="200">
+                        <figcaption align="center">Ground Truth (64*64)</figcaption>
+                    </figure>
+                </td>
+                <td>
+                    <figure>
+                        <img src="images/trans_pred.gif" alt="transformer_prediction" width="200" height="200">
+                        <figcaption align="center">Transformer Prediction (64*64)</figcaption>
+                    </figure>
+                </td>
+            </tr>
+        </table>
+
+    <h2 align="middle">Milestone Slides and Video</h2>
+    <p align="middle">The Milestone slides can be found <a href="https://docs.google.com/presentation/d/1U1CHY0-fs_mRGrWPOZpeogGM2bH88i2tAF3Dig0kPLI" target="_blank">here</a>.</p>
+    <p align="middle">The Milestone video can be found <a href="./video/184-milestone.mp4">here</a>
+    
+        <h2 align="middle">Updated Work Plan</h2>
+    <table class="custom-tbl">
+        <tr>
+            <th>Week&emsp;</th>
+            <th>Primary Goals</th>
+            <th>Secondary Goals</th>
+        </tr>
+        <tr>
+            <td>Week 3</td>
+            <td>Develope the real time rendering pipeline for both high/low resolution</td>
+            <td>Develope the API call for generating fluid vorticity at a specific time step</td>
+        </tr>
+        <tr>
+            <td>Week 4</td>
+            <td>Prepare the final report and presentation</td>
+            <td>Speed comparison between traditional fluid simulation & simulation with super resolution</td>
+        </tr>
+    </table>
+
+
+</body>
+
+</html>
