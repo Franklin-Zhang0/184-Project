@@ -35,6 +35,7 @@
         }
 
         table.custom-tbl {
+            margin: 0 auto;
             border: 1px solid;
         }
 
@@ -73,18 +74,20 @@
     <h1 align="middle">Fluid Super Resolution</h1>
     <h3 align="middle">Charles Cai, Congrong Xu, Franklin Zhang, Yunqi Li</h3>
 
-    <h2 align="middle">Overview</h2>
-    <p align="left">In this project, we aimed at building a prediction model for fluid simulation.
-        However, after some test & trials, we found that directly predicting the next frame of the fluid simulation
-        would results in high prediction error and low visual quality as the time step increases.
-        Therefore, we decided to modify our project to focus on speeding up the fluid simulation process by
-        super-resolving the low-resolution fluid simulation data.
+    <h2 align="middle">Abstract</h2>
+    <p align="left">In this project, we focus on enhancing the efficiency of fluid simulations by applying super-resolution techniques to low-resolution fluid simulation data.
+        We began by generating a comprehensive dataset of 2,000 fluid simulations at two resolutions: low (8x8) and high (64x64). 
+        This dataset was then used to train a VQ-VAE-2 model, which super-resolves the low-resolution data. 
+        We also comprehensively evaluated the performance of our super_resolution model using 3 metrics: Mean Absolute Error (MAE), Root Mean Square Error (RMSE), and Physics Loss. 
+        To demonstrate the efficiency of our approach, we developed a Super-Resolution Rendering Pipeline. 
+        This setup allowed us to compare the rendering speeds of traditional fluid simulations with our super-resolution method, highlighting the efficiency gains achieved through our technique.
+        For better visualization, we also developed a Real-time Rendering Pipeline to visualize our fluid simulation method in real-time.
     </p>
 
     <div>
-        <h2 align="middle">Progress</h2>
-        <h3 align="left">Physical Method</h3>
-        <p align="left"> In this project, we apply the spectral method, which is often employed in computational fluid
+        <h2 align="middle">Technical Approach</h2>
+        <h3 align="left">Simulation Method</h3>
+        <p align="left"> We apply the spectral method to simulate fluids, which is often employed in computational fluid
             dynamics (CFD).
             The spectral method is a numerical technique used to approximate solutions to differential equations
             by representing the solution as a sum of basis functions in the spectral domain after applying Fourier
@@ -107,9 +110,9 @@
         </p>
 
         <h3 align="left">Fluid Simulations Dataset</h3>
-        <p align="left"> We have generated a comprehensive dataset of 1,800 fluid simulations using the 2D
-            Navier-Stokes equations, which simulates 2D incompressible viscous fluid. The
-            simulations were performed on a 256x256 grid, subsampled to 64x64 for efficient storage. Each simulation
+        <p align="left"> We have generated a comprehensive dataset of 2,000 fluid simulations of 2D incompressible viscous fluid
+            using the method described in the previous section.
+            The simulations were performed on a 256x256 grid, subsampled to 64x64 for efficient storage. Each simulation
             captures the
             evolution of the vorticity field over a total time of 20.0 units, with a time step of 1e-4 and a viscosity
             of 1e-3.</p>
@@ -129,20 +132,39 @@
             vorticity fields at the previous and next time steps. The dataset was generated in batches of 40 simulations
             to manage computational resources
             efficiently.</p>
-        <h3 align="left">VAE Pipeline For Super Resolution</h3>
+        <h3 align="left">VAE Training Pipeline For Super Resolution</h3>
         <p align="left"> We build up a VQ-VAE-2 training pipeline for the super resolution of fluid simulation data.
         </p>
         <!-- number list -->
         <ol>
-            <li> Downsample the fluid simulation data by a factor of 8 on each axis to generate the low-resolution data.
             </li>
-            <li> Upsample by a factor of 8 using bilinear interpolation. </li>
+            <li> Upsample the low-resolution data by a factor of 8 using bilinear interpolation and obtain the model input data.</li>
             <li> Concatenate 3 frames of the upsampled data to form the input to the VQ-VAE-2 model(Each frame differs
                 by 0.5s). </li>
             <li> Feed the input date into the VQ-VAE-2 model to reconstruct the 3 frames of high-resolution data. </li>
-            <li> Only pick the middle frame of the reconstructed data as the output and compute the reconstruction loss.
+            <li> Only pick the middle frame of the reconstructed data as the output and compute the reconstruction loss with the high-resolution ground truth.
             </li>
         </ol>
+        <figure align="left">
+            <img src="images/vae_training_pipeline.png" width="600" >
+            <!-- <figcaption align="center">VQ-VAE-2 Pipeline</figcaption> -->
+        </figure>
+
+        <h3 align="left">Super-Resolution Simulation Pipeline</h3>
+        Suppose we're given a initial condition of the fluid vorticity field at 64*64 resolution, and we want its vorticity field for the next T s every 0.1s.
+        For better accuracy, we want to simulate it using delta t = 1e-3s. 
+        <ol>
+            <li> Downsample the high-resolution data to 8*8 resolution using bilinear interpolation. </li>
+            <li> Simulate the fluid at 8*8 resolution for T seconds using delta t = 1e-3s. </li>
+            <li> Sample the vorticity field every 0.1s and use the VQ-VAE-2 model to super-resolve the low-resolution vorticity field to 64*64 resolution. </li>
+        </ol>
+
+        <h3 align="left">Real-time Rendering Pipeline</h3>
+        We have developed a real-time rendering pipeline to visualize our fluid simulation method in realtime.
+        The pipeline consists of a fluid simulation module and a rendering module. The fluid simulation module generates
+        the vorticity field at each time step, while the rendering module use vae to super-resolve the low-resolution frame and visualize the vorticity field every 0.1s.
+
+        <h2 align="middle">Evaluation and Results</h2>
         <h3 align="left">Performance Evaluation</h3>
         <p align="left"> We use three loss to evaluate the performance of the VQ-VAE-2 model: </p>
         <ol>
@@ -166,7 +188,7 @@
             </figure>    
         </ol>
         <h3 align="left">Result Demonstration</h3>
-        <p align="left"> We have trained the VQ-VAE-2 model on the fluid simulation dataset and generated some
+        <p align="left"> We trained the VQ-VAE-2 model on the fluid simulation dataset and generated some
             super-resolved fluid simulation data. The following images show the comparison among the ground truth
             high-resolution data, downsampled low-resolution data, bilinear upsampled data, and the VQ-VAE-2 upsampled
             data.
@@ -201,10 +223,37 @@
                 </td>
             </tr>
         </table>
+
+        <h3 align="left">Speed Comparison</h3>
+        We test the speed of simulation on a 20s fluid simulation using delta t = 1e-3s and 64*64 resolution.
+        <ul>
+            <li>
+                <strong>Real-time Rendering Comparison</strong>
+                <p align="left"> 
+                    The traditional method took 26.03s to simulate the fluid at 64*64 resolution.<br>
+                    Our super-resolution method took 15.50s to simulate the fluid at 8*8 resolution and 1.95s to super-resolve the low-resolution data to 64*64 resolution, which is 17.45s in total.<br>
+                    Our method can achieve <strong>1.5</strong> times faster real-time rendering speed than the traditional method on cpu.
+                </p>
+                <figure align="middle">
+                    <img src="images/realtime_rendering_pipeline.gif" width="600" >
+                    <!-- <figcaption align="center">Real-time Rendering Pipeline</figcaption> -->
+                </figure>
+            </li>   
+            <li>
+                <strong>Simulation without rendering Comparison</strong>
+                <p align="left"> We have also compared the speed for generating simulation results without rendering between the traditional fluid simulation method and our super-resolution method.
+                    For the traditional method, it took TODO s to simulate the fluid at 64*64 resolution.
+                    For our super-resolution method, it took TODO s to simulate the fluid at 8*8 resolution and TODO s to super-resolve the low-resolution data to 64*64 resolution, which is TOODO s in total.
+                    Our method can achieve TODO times faster real-time rendering speed than the traditional method.
+                </p>
+            </li>
+        </ul>
+
+
     </div>
 
-    <div>
-    <h3 align="left">Transformer For Fluid Prediction</h3>
+    <!-- <div> -->
+    <!-- <h3 align="left">Transformer For Fluid Prediction</h3>
     <p align="left"> We have also trained a transformer model on the fluid simulation dataset to predict the next frame
         of the fluid simulation. The transformer did not perform well on the fluid simulation dataset, as the prediction
         error increased significantly with the time step. The following images show the comparison between the ground
@@ -224,30 +273,60 @@
                     </figure>
                 </td>
             </tr>
-        </table>
+        </table> -->
 
-    <h2 align="middle">Milestone Slides and Video</h2>
-    <p align="middle">The Milestone slides can be found <a href="https://docs.google.com/presentation/d/1b2LiCKnKOyCzMKFkEPuWV1U4CxX2tGXdr6_qIbQZdVo" target="_blank">here</a>.</p>
-    <p align="middle">The Milestone video can be found <a href="./video/184-milestone.mp4">here</a>
+    <h2 align="middle">Final Slides and Video</h2>
+    <p align="middle">The Final slides can be found <a href="https://docs.google.com/presentation/d/1b2LiCKnKOyCzMKFkEPuWV1U4CxX2tGXdr6_qIbQZdVo/edit#slide=id.p3" target="_blank">here</a>.</p>
+    <p align="middle">The Final video can be found <a href="./video/184-milestone.mp4">here</a>
     
-    <!-- <h2 align="middle">Updated Work Plan</h2>
-    <table class="custom-tbl">
+    <h2 align="middle">Contributions</h2>
+    <table  class="custom-tbl">
         <tr>
-            <th>Week&emsp;</th>
-            <th>Primary Goals</th>
-            <th>Secondary Goals</th>
+            <th>Member&emsp;</th>
+            <th>Contributions</th>
         </tr>
         <tr>
-            <td>Week 3</td>
-            <td>Develope the real time rendering pipeline for both high/low resolution</td>
-            <td>Develope the API call for generating fluid vorticity at a specific time step</td>
+            <td>Franklin Zhang</td>
+            <td>
+                <ul>
+                    <li>Build up vae training pipeine & super-resolution model design </li>
+                    <li>Run gpu intensive tasks on cluster, e.g. model training, data generation </li>
+                    <li>Leading the group </li>
+                </ul>
+            </td>
         </tr>
         <tr>
-            <td>Week 4</td>
-            <td>Prepare the final report and presentation</td>
-            <td>Speed comparison between traditional fluid simulation & simulation with super resolution</td>
+            <td>Yunqi Li</td>
+            <td>
+                <ul>
+                    <li>Build up evaluation pipeline on different metrics & plotting</li>
+                    <li>Super-resolution Model design</li>
+                    <li>Related work investigation</li>
+                </ul>
+            </td>
         </tr>
-    </table> -->
+        <tr>
+            <td>Congrong Xu</td>
+            <td>
+                <ul>
+                    <li>Build up realtime fluid renderer</li>
+                    <li>Combine vae into realtime render pipeline</li>
+                    <li>Research and test on related gpu fluid simulation methods</li>
+                </ul>
+            </td>
+        </tr>
+        <tr>
+            <td>Charles Cai</td>
+            <td>
+                <ul>
+                    <li> Build up dataset generator for different resolution</li>
+                    <li> Underlying physical methods research</li>
+                    <li> Original, bilinear, super-resolution's outputs comparison (show results in video)</li>
+                </ul>
+            </td>
+        </tr>
+        
+    </table>
 
 
 </body>
