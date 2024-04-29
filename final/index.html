@@ -76,6 +76,8 @@
 
     <h2 align="middle">Abstract</h2>
     <p align="left">In this project, we focus on enhancing the efficiency of fluid simulations by applying super-resolution techniques to low-resolution fluid simulation data.
+        While simulating in high resolution can achieve more accurate results, it is computationally expensive and time-consuming. However, low-resolution simulations are faster but lack detail.
+        To address this issue, we propose a super-resolution method that uses a VQ-VAE-2 model to upsample low-resolution fluid simulation data to high resolution.
         We began by generating a comprehensive dataset of 2,000 fluid simulations at two resolutions: low (8x8) and high (64x64). 
         This dataset was then used to train a VQ-VAE-2 model, which super-resolves the low-resolution data. 
         We also comprehensively evaluated the performance of our super_resolution model using 3 metrics: Mean Absolute Error (MAE), Root Mean Square Error (RMSE), and Physics Loss. 
@@ -281,6 +283,14 @@
     <p align="middle">The Final slides can be found <a href="https://docs.google.com/presentation/d/1b2LiCKnKOyCzMKFkEPuWV1U4CxX2tGXdr6_qIbQZdVo/edit#slide=id.p3" target="_blank">here</a>.</p>
     <p align="middle">The Final video can be found <a href="./video/184-final.mp4">here</a>
     
+    <h2 align="middle">References</h2>
+    <ul>
+        <li>VQ-VAE-2 Paper: <a href="https://arxiv.org/abs/1906.00446">https://arxiv.org/abs/1906.00446</a><br>
+            VQ-VAE-2 Code:<a href="https://github.com/rosinality/vq-vae-2-pytorch/tree/master"> https://github.com/rosinality/vq-vae-2-pytorch/tree/master</a>
+        <li>Fluid Simulation code: <a href="https://github.com/Rickyang2233/FluidDiff">https://github.com/Rickyang2233/FluidDiff</a></li>
+        <li>Super-Resolution Background: <a href="https://arxiv.org/pdf/1811.11328">https://arxiv.org/pdf/1811.11328</a></li>
+    </ul>
+
     <h2 align="middle">Contributions</h2>
     <table  class="custom-tbl">
         <tr>
