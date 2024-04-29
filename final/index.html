@@ -228,7 +228,7 @@
         We test the speed of simulation on a 20s fluid simulation using delta t = 1e-3s and 64*64 resolution.
         <ul>
             <li>
-                <strong>Real-time Rendering Comparison</strong>
+                <strong>Real-time Rendering Comparison on CPU</strong>
                 <p align="left"> 
                     The traditional method took 26.03s to simulate the fluid at 64*64 resolution.<br>
                     Our super-resolution method took 15.50s to simulate the fluid at 8*8 resolution and 1.95s to super-resolve the low-resolution data to 64*64 resolution, which is 17.45s in total.<br>
@@ -240,11 +240,12 @@
                 </figure>
             </li>   
             <li>
-                <strong>Simulation without rendering Comparison</strong>
-                <p align="left"> We have also compared the speed for generating simulation results without rendering between the traditional fluid simulation method and our super-resolution method.
-                    For the traditional method, it took TODO s to simulate the fluid at 64*64 resolution.
-                    For our super-resolution method, it took TODO s to simulate the fluid at 8*8 resolution and TODO s to super-resolve the low-resolution data to 64*64 resolution, which is TOODO s in total.
-                    Our method can achieve TODO times faster real-time rendering speed than the traditional method.
+                <strong>Simulation without rendering Comparison on GPU</strong>
+                <p align="left"> We have also compared the speed for generating simulation results without rendering between the traditional fluid simulation method and our super-resolution method.<br>
+                    For this test, we use batch size 60 to simulate 60 simulations at the same time.<br>
+                    For the traditional method, it took 43.22s to simulate the fluid at 64*64 resolution.<br>
+                    For our super-resolution method, it took 9.40s to simulate the fluid at 8*8 resolution and 2.65s to super-resolve the low-resolution data to 64*64 resolution, which is 12.05s in total.<br>
+                    Our method can achieve <strong>3.5</strong> times faster real-time rendering speed than the traditional method.
                 </p>
             </li>
         </ul>
